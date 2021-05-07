@@ -1,0 +1,142 @@
+
+### Check Services
+GET http://localhost:4041/iot/services
+fiware-service: production
+fiware-servicepath: /*
+
+### Check devices (DO NOT USE /*)
+GET http://localhost:4041/iot/devices
+fiware-service: production
+fiware-servicepath: /ids
+
+
+### Check devices (DO NOT USE /*)
+GET http://localhost:4041/iot/devices
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+### Subscriptions
+GET http://localhost:1026/v2/subscriptions
+
+### camera (DO NOT USE /*)
+GET http://localhost:1026/v2/entities
+fiware-service: production
+fiware-servicepath: /ids
+
+### camera (DO NOT USE /*)
+GET http://localhost:1026/v2/entities
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+### Entities
+GET http://localhost:1026/v2/entities
+
+### Entities
+GET http://localhost:1026/v2/entities/urn:ngsi-ld:ImageRecord:001/attrs/image/value
+
+###
+PUT http://localhost:1026/v2/entities/urn:ngsi-ld:ImageRecord:001/attrs/image/value
+Content-Type: application/json
+
+{
+    "databaseType": "mongo",
+    "databaseEndpoint": "http://localhost:27017",
+    "database": "production",
+    "collection": "/ids",
+    "imageFile": "asljdhasldk"
+}
+
+###
+POST http://localhost:1026/v2/subscriptions
+Content-Type: application/json
+
+{
+    "description": "whatevz",
+    "subject": {
+        "entities": [
+            {
+                "id": "urn:ngsi-ld:ImageRecord:001",
+                "type": "reference"
+            }
+        ],
+        "condition": {
+            "attrs": [
+                "image"
+            ]
+        }
+    },
+    "notification": {
+        "http": {
+            "url": "http://cygnus:5051/notify"
+        }
+    }
+}
+
+###
+POST http://localhost:4041/iot/services
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /ids
+
+{
+    "services": [
+        {
+            "resource": "/iot/json",
+            "apikey": "line001",
+            "type": "camera"
+        }
+    ]
+}
+
+
+### TEST IOT AGENT MQTT MESSAGES (HTTP COMMAND)
+PATCH http://localhost:1026/v2/entities/urn:ngsi-ld:Camera:001/attrs
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /ids
+
+{
+    "capture": {
+        "type": "command",
+        "value": "badjoinz"
+    }
+}
+
+### TEST IOT AGENT MQTT MESSAGES (HTTP COMMAND)
+PATCH http://localhost:1026/v2/entities/urn:ngsi-ld:Camera:001/attrs
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+{
+    "capture": {
+        "type": "command",
+        "value": ""
+    }
+}
+
+
+### TEST IOT AGENT MQTT MESSAGES (HTTP COMMAND)
+POST http://localhost:1026/v2/op/update
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+{
+    "actionType": "update",
+    "entities": [
+        {
+            "id": "urn:ngsi-ld:Camera:001",
+            "type": "camera",
+            "configure": {
+                "type": "command",
+                "value": {
+                    "brightness": 0.9,
+                    "flash": "off",
+                    "focus": "auto",
+                    "filter": "none"
+                }
+            }
+        }
+    ]
+}

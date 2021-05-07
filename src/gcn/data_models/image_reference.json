@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/firefit/imageReferenceSchema",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "image": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "databaseType": {
+                "type": "string"
+              },
+              "databaseEndpoint": {
+                "type": "string"
+              },
+              "database": {
+                "type": "string"
+              },
+              "collection": {
+                "type": "string"
+              },
+              "imageFile": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "databaseType",
+              "databaseEndpoint",
+              "database",
+              "collection",
+              "imageFile"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "image"
+    ]
+  }

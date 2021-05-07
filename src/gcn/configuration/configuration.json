@@ -1,0 +1,15 @@
+{
+    "cb_endpoint": "http://orion:1026",
+    "cygnus_endpoint": "http://cygnus:5051",
+    "iota_endpoint": "http://iot-agent:4041",
+    "iota_protocol": "MQTT",
+    "protocol_broker_address": "mosquitto",
+    "protocol_broker_port": "1883",
+    "entity_id": "urn:ngsi-ld:ImageRecord:001",
+    "camera_id": "urn:ngsi-ld:Camera:001",
+    "api_key": "camera",
+    "service": "production",
+    "service_path": "manufacturer",
+    "sink": "mongo",
+    "sink_endpoint": "mongodb://mongo-db:27017"
+}
