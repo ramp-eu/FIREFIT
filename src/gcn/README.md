@@ -21,7 +21,7 @@ To ensure proper functionality, GCN depends on the following services:
   - MongoDB
   - Mosquitto
 
-These services are presented with detail in the [FIREFIT Rose-AP repository documentation](../README.md).
+These services are presented with detail in the [FIREFIT Rose-AP repository documentation](../../README.md).
 
 # 3. Operation Principle
 
