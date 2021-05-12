@@ -1,0 +1,72 @@
+{
+    "$schema": "http://json-schema.org/firefit/classificationResult",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "classification": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "imageDatabaseEndpoint": {
+                "type": "string"
+              },
+              "imageDatabase": {
+                "type": "string"
+              },
+              "imageCollection": {
+                "type": "string"
+              },
+              "imageFile": {
+                "type": "string"
+              },
+              "modelDatabase": {
+                "type": "string"
+              },
+              "modelCollection": {
+                "type": "string"
+              },
+              "modelDatabaseEndpoint": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "classification": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "imageDatabaseEndpoint",
+              "imageDatabase",
+              "imageCollection",
+              "imageFile",
+              "modelDatabase",
+              "modelCollection",
+              "modelDatabaseEndpoint",
+              "model",
+              "classification"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "classification"
+    ]
+  }

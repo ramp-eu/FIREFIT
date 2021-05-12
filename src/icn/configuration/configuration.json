@@ -1,0 +1,18 @@
+{
+    "cb_endpoint": "http://orion:1026",
+    "cygnus_endpoint": "http://cygnus:5051",
+    "iota_endpoint": "http://iot-agent:4041",
+    "iota_protocol": "MQTT",
+    "protocol_broker_address": "mosquitto",
+    "protocol_broker_port": "1883",
+    "entity_id": "urn:ngsi-ld:ImageClassification:001",
+    "image_entity_id": "urn:ngsi-ld:ImageRecord:001",
+    "classifier_id": "urn:ngsi-ld:ImageClassifier:001",
+    "api_key": "classifier",
+    "service": "models",
+    "service_path": "flowers",
+    "model_db_type": "mongo",
+    "model_db_endpoint": "mongodb://mongo-db:27017",
+    "host_ip": "icn",
+    "host_port": "8181"
+}
