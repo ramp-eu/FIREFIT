@@ -44,7 +44,7 @@ services:
         - IOTA_CB_PORT=1026
         - IOTA_NORTH_PORT=4041
         - IOTA_REGISTRY_TYPE=mongodb
-        - IOTA_LOG_LEVEL=DEBUG
+        - IOTA_LOG_LEVEL=INFO
         - IOTA_TIMESTAMP=true
         - IOTA_CB_NGSI_VERSION=v2
         - IOTA_AUTOCAST=true
@@ -67,6 +67,11 @@ services:
         - "1883"
     ports:
         - "1883:1883"
+    volumes:
+      - type: bind
+        source: ./mosquitto/config
+        target: /mosquitto/config
+    
   
   # Data Persistence
   cygnus:
@@ -80,7 +85,7 @@ services:
     environment:
         - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
         - "CYGNUS_MONGO_SERVICE_PORT=5051"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_LOG_LEVEL=INFO"
         - "CYGNUS_API_PORT=5080"
         - "CYGNUS_SERVICE_PORT=5051"
 

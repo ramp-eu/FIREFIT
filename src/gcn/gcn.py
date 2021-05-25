@@ -7,7 +7,6 @@ from gcn_lib import Camera
 from gcn_lib import CameraEngine
 from gcn_lib import MqttClient
 
-
 if __name__ == '__main__':
 
     logger.info('Application starting.')
@@ -55,5 +54,3 @@ if __name__ == '__main__':
 
     cgn = MqttClient(config, cam_eng)
     cgn.start()
-
-
