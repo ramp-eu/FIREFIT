@@ -1,66 +1,138 @@
-# README.md for DockerHub
+# FIREFIT ROSE-AP
 
+The Generic Camera Node ([GCN](../src/gcn/README.md)) and Image Classification Node ([ICN](../src/icn/README.md)) are FIWARE-ready components that aim to help the development of complete systems integrating vision-based inspection modules and image processing algorithms. Although classifying features in an image depend on the application, it is relevant in the context where ROSE-AP stands, since it was designed as an answer to requirements and optimizations imposed and identified by the FIREFIT experiment.
+
+## How to build the images
+
+The procedures to build an image for each node are presented in the [Installation Guide](../docs/installationguide.md).
+
+## How to use the images
+
+The GCN and ICN can be instantiated individually or together. Once instantiated, they must connect to an instance of the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). A sample `docker-compose` file can be found below.
+
+```yml
+version: "3.5"
+services:
+  # Orion is the context broker
+  orion:
+    image: fiware/orion:2.4.0
+    hostname: orion
+    container_name: fiware-orion
+    depends_on:
+      - mongo-db
+    networks:
+      - default
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo-db -logLevel DEBUG -noCache -insecureNotif
+
+  # Databases
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - default
+    command: --bind_ip_all --smallfiles
+  
+  # IoT Agent (JSON)
+  iot-agent:
+    image: fiware/iotagent-json:latest
+    hostname: iot-agent
+    container_name: fiware-iot-agent
+    depends_on:
+        - mongo-db
+    networks:
+        - default
+    expose:
+        - "4041"
+    ports:
+        - "4041:4041"
+    environment:
+        - IOTA_CB_HOST=orion
+        - IOTA_CB_PORT=1026
+        - IOTA_NORTH_PORT=4041
+        - IOTA_REGISTRY_TYPE=mongodb
+        - IOTA_LOG_LEVEL=DEBUG
+        - IOTA_TIMESTAMP=true
+        - IOTA_CB_NGSI_VERSION=v2
+        - IOTA_AUTOCAST=true
+        - IOTA_MONGO_HOST=mongo-db
+        - IOTA_MONGO_PORT=27017
+        - IOTA_MONGO_DB=iotagentjson
+        - IOTA_PROVIDER_URL=http://iot-agent:4041
+        - IOTA_DEFAULT_RESOURCE=/iot/json
+        - IOTA_MQTT_HOST=mosquitto
+        - IOTA_MQTT_PORT=1883
+
+  # MQTT broker
+  mosquitto:
+    image: eclipse-mosquitto
+    hostname: mosquitto
+    container_name: mosquitto
+    networks:
+        - default
+    expose:
+        - "1883"
+    ports:
+        - "1883:1883"
+  
+  # Data Persistence
+  cygnus:
+    image: fiware/cygnus-ngsi:latest
+    hostname: cygnus
+    container_name: fiware-cygnus
+    depends_on:
+        - mongo-db
+    networks:
+        - default
+    environment:
+        - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
+        - "CYGNUS_MONGO_SERVICE_PORT=5051"
+        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_SERVICE_PORT=5051"
+
+  # GCN
+  gcn:
+    image: gcn
+    hostname: gcn
+    container_name: gcn
+    depends_on:
+        - orion
+        - iot-agent
+        - mosquitto
+        - mongo-db
+    networks:
+        - default
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24
+
+volumes:
+  mongo-db: ~
 ```
-Amend as necessary...
-```
 
-## How to build an image
+The relevant elements to consider regarding the `docker-compose` are:
 
-The [Dockerfile](https://github.com/jason-fox/TTE.project1/blob/master/docker/Dockerfile) associated with this image can
-be used to build an image in several ways:
+- The usage of `MQTT` protocol and therefore the `mosquitto` broker
+- `hostname` of each service
+- `expose` specified ports, stating that those ports will be exposed within the **docker network**
+- `ports` specified ports, stating that those ports will be exposed to the **host machine**
 
--   By default, the `Dockerfile` retrieves the **latest** version of the codebase direct from GitHub (the `build-arg` is
-    optional):
+A description of the complete addresses (address:port) for each service, given the presented `docker-compose` is as follows:
 
-```console
-docker build -t <component> . --build-arg DOWNLOAD=latest
-```
+- Orion - `orion:1026`
+- MongoDB - `mongo-db:27017`
+- JSON IoT Agent - `iot-agent:4041`
+- Mosquitto (MQTT broker) - `mosquitto:1883`
+- Cygnus - `cygnus:5051`
 
--   You can alter this to obtain the last **stable** release run this `Dockerfile` with the build argument
-    `DOWNLOAD=stable`
-
-```console
-docker build -t <component> . --build-arg DOWNLOAD=stable
-```
-
--   You can also download a specific release by running this `Dockerfile` with the build argument `DOWNLOAD=<version>`
-
-```console
-docker build -t <component> . --build-arg DOWNLOAD=1.7.0
-```
-
-## Building from your own fork
-
-To download code from your own fork of the GitHub repository add the `GITHUB_ACCOUNT`, `GITHUB_REPOSITORY` and
-`SOURCE_BRANCH` arguments (default `master`) to the `docker build` command.
-
-```console
-docker build -t <component> . \
-    --build-arg GITHUB_ACCOUNT=<your account> \
-    --build-arg GITHUB_REPOSITORY=<your repo> \
-    --build-arg SOURCE_BRANCH=<your branch>
-```
-
-## Building from your own source files
-
-Alternatively, if you want to build directly from your own sources, please copy the existing `Dockerfile` into file the
-root of the repository and amend it to copy over your local source using :
-
-```Dockerfile
-COPY . /opt/component/
-```
-
-Full instructions can be found within the `Dockerfile` itself.
-
-### Using PM2
-
-The Component within the Docker image can be run encapsulated within the [pm2](http://pm2.keymetrics.io/) Process
-Manager by adding the `PM2_ENABLED` environment variable.
-
-```console
-docker run --name component -e PM2_ENABLED=true -d fiware/component-ul
-```
-
-Use of pm2 is **disabled** by default. It is unnecessary and counterproductive to add an additional process manager if
-your dockerized environment is already configured to restart Node.js processes whenever they exit (e.g. when using
-[Kubernetes](https://kubernetes.io/))
+Having a deployment that ensures the minimal service requirements for the ROSE-AP, the next step is to [configure](../docs/installationguide.md#Configuration) the necessary files before building the ROSE-AP images.
