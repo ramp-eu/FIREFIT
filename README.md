@@ -1,6 +1,6 @@
 # FIREFIT ROSE-AP
 
-[![License: AGPL-3.0](https://img.shields.io/github/license/ramp-eu/TTE.project1.svg)](https://opensource.org/licenses/AGPL-3.0)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 [![Docker badge](https://img.shields.io/docker/pulls/ramp-eu/TTE.project1.svg)](https://hub.docker.com/repository/docker/magnoguedes/firefit-rose-ap)
 [![Documentation Status](https://readthedocs.org/projects/firefitrose-ap/badge/?version=latest)](https://firefitrose-ap.readthedocs.io/en/latest/?badge=latest)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4832/badge)](https://bestpractices.coreinfrastructure.org/projects/4832)
@@ -112,7 +112,7 @@ Example `Dockerfiles` are also provided for each component.
 
 ## Usage
 
-The following `docker-compose` can be used to ramp-up and run the stack with all necessary components. However, this is only an example and it is up to the user to properly configure all the services and guarantee the solution security.
+The following [`docker-compose`](docker/docker-compose.yml) can be used to ramp-up and run the stack with all necessary components. However, this is only an example and it is up to the user to properly configure all the services and guarantee the solution security.
 
 ```yaml
 version: "3.5"

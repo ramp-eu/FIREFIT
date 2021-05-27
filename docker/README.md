@@ -1,14 +1,14 @@
 # FIREFIT ROSE-AP
 
-The Generic Camera Node ([GCN](../src/gcn/README.md)) and Image Classification Node ([ICN](../src/icn/README.md)) are FIWARE-ready components that aim to help the development of complete systems integrating vision-based inspection modules and image processing algorithms. Although classifying features in an image depend on the application, it is relevant in the context where ROSE-AP stands, since it was designed as an answer to requirements and optimizations imposed and identified by the FIREFIT experiment.
+The Generic Camera Node ([GCN](../gcn) and Image Classification Node ([ICN](../icn)) are FIWARE-ready components that aim to help the development of complete systems integrating vision-based inspection modules and image processing algorithms. Although classifying features in an image depend on the application, it is relevant in the context where ROSE-AP stands, since it was designed as an answer to requirements and optimizations imposed and identified by the FIREFIT experiment.
 
 ## How to build the images
 
-The procedures to build an image for each node are presented in the [Installation Guide](../docs/installationguide.md).
+The procedures to build an image for each node are presented in the Installation and Administration Guide for the [GCN](../gcn/docs/installationguide.md) and [ICN](../icn/docs/installationguide.md).
 
 ## How to use the images
 
-The GCN and ICN can be instantiated individually or together. Once instantiated, they must connect to an instance of the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). A sample `docker-compose` file can be found below.
+The GCN and ICN can be instantiated individually or together. Once instantiated, they must connect to an instance of the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). A sample [`docker-compose`](docker-compose.yml) file is provided.
 
 ```yml
 version: "3.5"
@@ -50,8 +50,10 @@ services:
         - default
     expose:
         - "4041"
+        - "7896"
     ports:
         - "4041:4041"
+        - "7896:7896"
     environment:
         - IOTA_CB_HOST=orion
         - IOTA_CB_PORT=1026
@@ -90,6 +92,11 @@ services:
         - mongo-db
     networks:
         - default
+    expose:
+        - "5080"
+    ports:
+        - "5051:5051"
+        - "5080:5080"
     environment:
         - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
         - "CYGNUS_MONGO_SERVICE_PORT=5051"
@@ -110,14 +117,28 @@ services:
     networks:
         - default
 
+  # ICN
+  icn:
+    image: icn
+    hostname: icn
+    container_name: icn
+    depends_on:
+        - orion
+        - iot-agent
+        - mosquitto
+        - mongo-db
+    networks:
+        - default
+    expose:
+        - "8181"
+    ports:
+        - "8181:8181"
+
 networks:
   default:
     ipam:
       config:
         - subnet: 172.18.1.0/24
-
-volumes:
-  mongo-db: ~
 ```
 
 The relevant elements to consider regarding the `docker-compose` are:
@@ -135,4 +156,4 @@ A description of the complete addresses (address:port) for each service, given t
 - Mosquitto (MQTT broker) - `mosquitto:1883`
 - Cygnus - `cygnus:5051`
 
-Having a deployment that ensures the minimal service requirements for the ROSE-AP, the next step is to [configure](../docs/installationguide.md#Configuration) the necessary files before building the ROSE-AP images.
+Please refer to the [GCN](../gcn/docs) and [ICN](../icn/docs) documentation for further configuration information.
