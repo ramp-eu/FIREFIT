@@ -14,4 +14,3 @@ To achieve this, the user is required to develop the necessary mechanisms using 
 - [Architecture](architecture.md)
 - [Installation and Administration Guide](installationguide.md)
 - [User Manual](usermanual.md)
-- [API](api.md)
