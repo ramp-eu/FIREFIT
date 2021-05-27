@@ -82,6 +82,10 @@ services:
         - "1883"
     ports:
         - "1883:1883"
+    volumes:
+        - type: bind
+          source: ./mosquitto/config
+          target: /mosquitto/config
   
   # Data Persistence
   cygnus:
