@@ -1,12 +1,14 @@
-#Getting Started
+# Getting Started
 
-In this section, a [GCN](../) configuration and usage example is presented.
+In this section, a [GCN](../) usage example is presented.
 
 > ***Be aware that the following content should be used as a reference only and not as a production ready solution. There are several security concerns that should be taken into account depending on the context where CGN will operate.***
 
-In order to produce the same results as presented here, it is advised to use the [Visual Studio Code](https://code.visualstudio.com/) [REST Client extension](https://github.com/Huachao/vscode-restclient) to perform HTTP requests, it is also available at the Extensions menu.
+## Introduction
 
-As a starting point, although the GCN image is not yet created, it is important to define and understand which services are necessary to ensure the GCN functionality, as mentioned in the [Installation and Administration Guide](installationguide.md). For this reason, the following [`docker-compose.yaml`](../docker/docker-compose.yml) file represents the deployment of the present example:
+In order to produce the same results as presented here, it is advised to use [Visual Studio Code](https://code.visualstudio.com/) with the [REST Client extension](https://github.com/Huachao/vscode-restclient) to perform HTTP requests.
+
+As a starting point, it is important to understand which services are necessary to ensure the [GCN](../) functionality, as mentioned in the [Installation and Administration Guide](installationguide.md). For this reason, the following `docker-compose.yml` file represents the deployment of the present example:
 
 ```yaml
 version: "3.5"
@@ -101,7 +103,7 @@ services:
 
   # GCN
   gcn:
-    image: gcn
+    image: introsyspt/gcn
     hostname: gcn
     container_name: gcn
     depends_on:
@@ -122,7 +124,7 @@ volumes:
   mongo-db: ~
 ```
 
-The relevant elements to consider regarding the [`docker-compose`](../docker/docker-compose.yml) are:
+The relevant elements to consider regarding the `docker-compose` are:
 
 - The usage of `MQTT` protocol and therefore the `mosquitto` broker
 - `hostname` of each service
@@ -132,14 +134,12 @@ The relevant elements to consider regarding the [`docker-compose`](../docker/doc
 A description of the complete addresses (address:port) for each service, given the presented `docker-compose` is as follows:
 
 - [Orion](https://fiware-orion.readthedocs.io/en/master/) - `orion:1026`
-- MongoDB - `mongo-db:27017`
-- JSON IoT Agent - `iot-agent:4041`
-- Mosquitto (MQTT broker) - `mosquitto:1883`
-- Cygnus - `cygnus:5051`
+- [MongoDB](https://www.mongodb.com/) - `mongo-db:27017`
+- [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/) - `iot-agent:4041`
+- [Mosquitto](https://mosquitto.org) (MQTT broker) - `mosquitto:1883`
+- [Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) - `cygnus:5051`
 
-Having a deployment that ensures the minimal service requirements for GCN, the next step is to configure the necessary files before building the GCN image.
-
-Starting with the [`configuration.json`](../configuration/configuration.json):
+For this getting started example, a default [configuration](../configuration/configuration.json) is provided, according to the following:
 
 ```json
 {
@@ -159,7 +159,9 @@ Starting with the [`configuration.json`](../configuration/configuration.json):
 }
 ```
 
-By comparing with the [`docker-compose`](../docker-compose-yml), it is possible to quickly correlate the defined parameters with the `hostname` and exposed/configured ports of each service. The id `urn:ngsi-ld:ImageRecord:001` will be assigned to the [Image Reference Entity](../data_models/image_reference.json) that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/). The id `urn:ngsi-ld:Camera:001` will be assigned to the camera device that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/) through [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html). Each image will be stored at the `manufacturer` collection of the `production` database from a MongoDB instance (`mongo` defined as `sink`).
+A detailed explanation of each parameter and how to configure the [GCN](../) and build a local docker image with the new configuration is given in the [Installation and Administration Guide](installationguide.md).
+
+By comparing with the `docker-compose`, it is possible to quickly correlate the defined parameters with the `hostname` and exposed/configured ports of each service. The id `urn:ngsi-ld:ImageRecord:001` will be assigned to the [Image Reference Entity](../data_models/image_reference.json) that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/). The id `urn:ngsi-ld:Camera:001` will be assigned to the camera device that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/) through [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html). Each image obtained from the camera will be stored at the `manufacturer` collection of the `production` database from a MongoDB instance (`mongo` defined as `sink`).
 
 As for the [`camera.py`](../gcn_lib/camera.py):
 
@@ -230,38 +232,20 @@ The `configure` function will directly `print` the parameters sent with the `con
 
 It is important to note that the contents of these functions depend on each user goals and eventually on each camera manufacturer. A user may not need to perform initialization tasks while another may wish to set several manufacturer specific camera parameters. A user may want to store images as [NumPy](https://numpy.org/) arrays while other may wish to store as an encoded `jpeg`. It all comes down to each user's needs.
 
-Finally, it is time to prepare the containerization of GCN using the [`Dockerfile`](../Dockerfile):
+## Initialize the stack
 
-```Dockerfile
-FROM python:3.8-slim-buster
-
-WORKDIR /app
-
-ADD . /app
-
-RUN pip install -r requirements.txt
-
-# user modules
-RUN pip install numpy
-
-CMD ["python", "./cgn.py"]
-```
-
-Since [NumPy](https://numpy.org/) is not a built-in Python package and it is used in this example, it needs to be installed. For that reason, an additional `RUN` command is issued to perform the operation. The Docker image is then [created]((https://docs.docker.com/engine/reference/commandline/build/)) with the name `gcn`:
-
-> ***The docker image name must correspond to the one defined at the docker-compose.yml file presented at the beginning of the example.***
+To initialize the stack, use the provided [`docker-compose.yml`](../docker/docker-compose.yml) by issuing the commands:
 
 ```console
-docker build -t gcn .
-```
+git clone https://github.com/Introsys/FIREFIT.ROSE-AP.git
+cd FIREFIT.ROSE-AP/gcn/docker
 
-The only remaining step to deploy GCN is to use the [`docker-compose.yml`](../docker/docker-compose.yml) file to create all the service instances:
-
-```console
 docker-compose -p gcn_stack up -d
 ```
 
-By running the docker command to check the running containers:
+> **Note:** a mosquitto configuration file must be present enabling remote client access
+
+This should create all the service instances. By checking the running containers:
 
 ```console
 docker container ls --all
@@ -271,13 +255,21 @@ One should obtain the following result:
 
 ```console
 CONTAINER ID   IMAGE                         COMMAND                  CREATED          STATUS          PORTS                              NAMES
-50d8262d9537   gcn                           "python ./cgn.py"        11 minutes ago   Up 11 minutes                                      gcn
+50d8262d9537   introsyspt/gcn                "python ./cgn.py"        11 minutes ago   Up 11 minutes                                      gcn
 8b7467ef977a   fiware/cygnus-ngsi:latest     "/cygnus-entrypoint.…"   11 minutes ago   Up 11 minutes   5050/tcp, 5080/tcp                 fiware-cygnus
 0212052b2e2e   fiware/orion:2.4.0            "/usr/bin/contextBro…"   11 minutes ago   Up 11 minutes   0.0.0.0:1026->1026/tcp             fiware-orion
 72bbe96da225   fiware/iotagent-json:latest   "docker/entrypoint.s…"   11 minutes ago   Up 11 minutes   0.0.0.0:4041->4041/tcp, 7896/tcp   fiware-iot-agent
 3aa2f8d41d86   eclipse-mosquitto             "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   0.0.0.0:1883->1883/tcp             mosquitto
 3b2cc0820f9d   mongo:3.6                     "docker-entrypoint.s…"   11 minutes ago   Up 11 minutes   0.0.0.0:27017->27017/tcp           db-mongo
 ```
+
+If you want to clean up and start again you can do so with the following command:
+
+```console
+docker-compose -p gcn_stack down
+```
+
+## Querying context data
 
 Using [Visual Studio Code](https://code.visualstudio.com/) with the [REST Client extension](https://github.com/Huachao/vscode-restclient), it is possible to query [Orion](https://fiware-orion.readthedocs.io/en/master/) for its entities:
 
@@ -382,7 +374,11 @@ Date: Wed, 31 Mar 2021 12:01:04 GMT
 ]
 ```
 
-One can infer that the device configuration was successfully performed, having the camera device available with the `capture` and `configure` commands as well as the `configuration` attribute stating the current configuration of the device. The configured id `urn:ngsi-ld:Camera:001` is also confirmed. Since the device was created at [Orion](https://fiware-orion.readthedocs.io/en/master/) through an intrinsic mechanism of [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html), it is possible to query the Agent to validate that the same representation of the device is defined, note the distinct address to where the HTTP request is sent:
+One can infer that the device configuration was successfully performed, having the camera device available with the `capture` and `configure` commands as well as the `configuration` attribute stating the current configuration of the device. The configured id `urn:ngsi-ld:Camera:001` is also confirmed.
+
+## Check devices defined by the IoT Agent
+
+Since the device was created at [Orion](https://fiware-orion.readthedocs.io/en/master/) through an intrinsic mechanism of [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html), it is possible to query the Agent to validate that the same representation of the device is defined, note the distinct address to where the HTTP request is sent:
 
 ```http
 ### Devices defined at production service and manufacturer service-path
@@ -441,7 +437,9 @@ Connection: close
 }
 ```
 
-The same device structure is presented, an expected result since it is the JSON IoT Agent the one responsible for creating the device entity at [Orion](https://fiware-orion.readthedocs.io/en/master/).
+The same device structure is presented, an expected result since it is the [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html) the one responsible for creating the device entity at [Orion](https://fiware-orion.readthedocs.io/en/master/).
+
+## Check the API key defined by the IoT agent
 
 Another important query to [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html) will determine if the proper `api_key` was defined, it is an important element since it will define part of the `MQTT` topics to which the IoT Agent will publish and subscribe to:
 
@@ -486,6 +484,8 @@ Connection: close
 ```
 
 One can infer that the `api_key`, `service` and `service-path` defined at the `configuration.json` are properly defined as a service, a mechanism used by [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html).
+
+## Check data persistency
 
 The only remaining element that is yet to be confirmed regarding [Orion](https://fiware-orion.readthedocs.io/en/master/) is the [Image Reference Entity](../data_models/image_reference.json) data persistency. To do so, a query to [Orion](https://fiware-orion.readthedocs.io/en/master/)'s subscriptions will be performed:
 
@@ -538,9 +538,13 @@ Date: Wed, 31 Mar 2021 13:18:05 GMT
 ]
 ```
 
-This confirms that [Orion](https://fiware-orion.readthedocs.io/en/master/) is notifying the Cygnus service regarding changes to the [Image Reference Entity](../data_models/image_reference.json). Fiware provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to confirm that data is being persisted. For that reason, the process will not be replicated in the present document.
+This confirms that [Orion](https://fiware-orion.readthedocs.io/en/master/) is notifying the Cygnus service regarding changes to the [Image Reference Entity](../data_models/image_reference.json).
 
-With all the automatic configurations performed by GCN analyzed, it is important to check its logs by executing the following docker command:
+> **Note:** FIWARE provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to confirm that data is being persisted. For that reason, the process will not be replicated in the present document.
+
+## Get log data
+
+With all the automatic configurations performed by [GCN](../) analyzed, it is important to check its logs by executing the following docker command:
 
 ```console
 docker logs gcn
@@ -587,9 +591,11 @@ cgn - 2021-03-31 16:05:04,648 - [INFO] - Connecting to the MQTT and making devic
 cgn - 2021-03-31 16:05:04,651 - [INFO] - [MQTT]: Connected to broker.
 ```
 
-Analyzing the presented content, it is possible to understand that all the elements that comprise GCN are sequentially configured. The most important note to take from this log record is the `DEBUG CONNECT` and `DEBUG INITIALIZE` that were previously defined in the `camera.py` file for the `connect` and `initialize` functions respectively. This proves that the code defined for the example is executed successfully for these functions, simulating a connection to a camera and initialization of its intrinsic parameters.
+Analyzing the presented content, it is possible to understand that all the elements that comprise [GCN](../) are sequentially configured. The most important note to take from this log record is the `DEBUG CONNECT` and `DEBUG INITIALIZE` that were previously defined in the `camera.py` file for the `connect` and `initialize` functions respectively. This proves that the code defined for the example is executed successfully for these functions, simulating a connection to a camera and initialization of its intrinsic parameters.
 
-Considering the interaction between [Orion](https://fiware-orion.readthedocs.io/en/master/) and [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html), as [explained with detail in Fiware documentation](https://fiware-tutorials.readthedocs.io/en/latest/iot-agent-json/index.html#enabling-context-broker-commands), a capture command will now be issued to the camera through [Orion](https://fiware-orion.readthedocs.io/en/master/) using a HTTP request:
+## Issue a capture command to the camera through Orion
+
+Considering the interaction between [Orion](https://fiware-orion.readthedocs.io/en/master/) and [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html), as explained with detail in [FIWARE documentation](https://fiware-tutorials.readthedocs.io/en/latest/iot-agent-json/index.html#enabling-context-broker-commands), a capture command will now be issued to the camera through [Orion](https://fiware-orion.readthedocs.io/en/master/) using a HTTP request:
 
 ```http
 ### Issue a capture command to the camera through Orion
@@ -638,7 +644,7 @@ cgn - 2021-03-31 16:06:38,430 - [INFO] - [MQTT]: Capture command issued.
 
 The topic to which `gcn` is subscribed to, as can be seen in the message received log, respects the format `/<api-key>/<device-id>` to comply with the [JSON IoT Agent functionality](https://fiware-iotagent-json.readthedocs.io/en/latest/index.html). From this point on, the logging system shows the feedback for the code previously defined at the `camera.py` file for the `capture` command, yielding the results for the two `print` statements. One very important note is the fact that the [NumPy](https://numpy.org/) was successfully encoded into a string, as it can be seen in the value assigned to the `image` key of the `json` to be sent to the database.
 
-To conclude the assessment of the success for the `capture` command, an access to the MongoDB instance needs to be performed in order to understand is the image was properly stored. As already mentioned, Fiware provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to perform such task. Here, only the commands executed inside the MongoDB container will be presented, and the first one is to list the databases:
+To conclude the assessment of the success for the `capture` command, an access to the [MongoDB](https://www.mongodb.com/) instance needs to be performed in order to understand is the image was properly stored. As already mentioned, FIWARE provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to perform such task. Here, only the commands executed inside the MongoDB container will be presented, and the first one is to list the databases:
 
 ```console
 show dbs
@@ -671,7 +677,7 @@ Which yields the following result:
 /manufacturer.files
 ```
 
-The `manufacturer` collection, defined as the `service-path` at the `configuration.json` file, is successfully created. Since `gcn` uses [GridFS](https://docs.mongodb.com/manual/core/gridfs/) to store files, these are split into chunks and saved in the auxiliary `/manufacturer.chunks` collection, while all the metadata is stored at the `/manufacturer.files`. These collections cooperate in MongoDB internal processes so that the user, when consuming data from MongoDB, only needs to know that the `/manufacturer` collection is available and has files in it.
+The `manufacturer` collection, defined as the `service-path` at the `configuration.json` file, is successfully created. Since `gcn` uses [GridFS](https://docs.mongodb.com/manual/core/gridfs/) to store files, these are split into chunks and saved in the auxiliary `/manufacturer.chunks` collection, while all the metadata is stored at the `/manufacturer.files`. These collections cooperate in [MongoDB](https://www.mongodb.com/) internal processes so that the user, when consuming data from [MongoDB](https://www.mongodb.com/), only needs to know that the `/manufacturer` collection is available and has files in it.
 
 To list the first 10 files of the collection (hopefully there is only one at the current stage):
 
@@ -751,6 +757,8 @@ Resulting in:
 
 Where a brand new image, `my_image14`, is presented.
 
+## Issue a configuration command to the camera through Orion
+
 At this point, only the `configure` camera command is yet to be tested. To do so, an example `configure` command is issued using the same process of the `capture` command, but this time, the `value` parameter has relevance since it will be passed to the `configure` function defined at the `camera.py` file:
 
 ```http
@@ -812,7 +820,7 @@ cgn - 2021-03-31 16:11:17,840 - [DEBUG] - [MQTT]: Publishing device configuratio
 cgn - 2021-03-31 16:11:17,842 - [DEBUG] - [MQTT]: Device configuration update published.
 ```
 
-Considering the `print` statements defined for the `configure` function at the `camera.py` file, it is possible to infer that the configuration task was executed as expected. Additionally, the parameters defined at the example were delivered to the `configure` function with the same structure that was presented to [Orion](https://fiware-orion.readthedocs.io/en/master/) through the HTTP request. 
+Considering the `print` statements defined for the `configure` function at the `camera.py` file, it is possible to infer that the configuration task was executed as expected. Additionally, the parameters defined at the example were delivered to the `configure` function with the same structure that was presented to [Orion](https://fiware-orion.readthedocs.io/en/master/) through the HTTP request.
 
 The image data is persisting in the database, and the proper functionality of the camera device is tested, it is now time to query [Orion](https://fiware-orion.readthedocs.io/en/master/) for the [Image Reference Entity](../data_models/image_reference.json):
 
@@ -956,4 +964,4 @@ Date: Wed, 31 Mar 2021 16:12:57 GMT
 
 It shows the command status attributes with the `OK` value and timestamps that match the ones presented by the `gcn` logs. Additionally, the `configuration` attribute shows the parameters that were used in the present example, stating that those are the actual parameters configured for the camera (although in reality all that was done was a `print` function).
 
-From this point on, it is possible to make use of a configurable camera which will have all of its images stored in a database service and present all the relevant context data at [Orion](https://fiware-orion.readthedocs.io/en/master/), allowing other services to consume this information as needed. One example of such services is the [ICN - Image Classification Node](../../icn) designed to ideally work together with GCN composing a system which can be interpreted as a Vision-Based Classification System as described in the [FIREFIT RoseAP repository documentation](../../).
+From this point on, it is possible to make use of a configurable camera which will have all of its images stored in a database service and present all the relevant context data at [Orion](https://fiware-orion.readthedocs.io/en/master/), allowing other services to consume this information as needed. One example of such services is the [ICN - Image Classification Node](../../icn) designed to ideally work together with GCN composing a system which can be interpreted as a Vision-Based Classification System as described by the [FIREFIT ROSE-AP](https://github.com/Introsys/FIREFIT.ROSE-AP).
