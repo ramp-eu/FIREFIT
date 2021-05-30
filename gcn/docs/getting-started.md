@@ -965,3 +965,7 @@ Date: Wed, 31 Mar 2021 16:12:57 GMT
 It shows the command status attributes with the `OK` value and timestamps that match the ones presented by the `gcn` logs. Additionally, the `configuration` attribute shows the parameters that were used in the present example, stating that those are the actual parameters configured for the camera (although in reality all that was done was a `print` function).
 
 From this point on, it is possible to make use of a configurable camera which will have all of its images stored in a database service and present all the relevant context data at [Orion](https://fiware-orion.readthedocs.io/en/master/), allowing other services to consume this information as needed. One example of such services is the [ICN - Image Classification Node](../../icn) designed to ideally work together with GCN composing a system which can be interpreted as a Vision-Based Classification System as described by the [FIREFIT ROSE-AP](https://github.com/Introsys/FIREFIT.ROSE-AP).
+
+---
+
+**Previous:** [Installation and Administration Guide](installationguide.md) | **Next:** [User Manual](usermanual.md)

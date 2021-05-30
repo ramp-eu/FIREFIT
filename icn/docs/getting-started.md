@@ -1,6 +1,6 @@
 # Getting Started
 
-In this section, a ICN configuration and usage example is presented.
+In this section, a [ICN](../) configuration and usage example is presented.
 
 > ***Be aware that the following content should be used as a reference only and not as a production ready solution. There are several security concerns that should be taken into account depending on the context where ICN will operate.***
 
@@ -1372,3 +1372,7 @@ Date: Thu, 01 Apr 2021 18:05:31 GMT
   }
 ]
 ```
+
+---
+
+**Previous:** [Installation and Administration Guide](installationguide.md) | **Next:** [User Manual](usermanual.md)

@@ -1,1 +1,5 @@
-api.md
+# API
+
+---
+
+**Previous:** [User Manual](usermanual.md)

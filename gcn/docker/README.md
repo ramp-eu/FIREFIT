@@ -137,10 +137,10 @@ The relevant elements to consider regarding the `docker-compose` are:
 
 A description of the complete addresses (address:port) for each service, given the presented `docker-compose` is as follows:
 
-- Orion - `orion:1026`
-- MongoDB - `mongo-db:27017`
-- JSON IoT Agent - `iot-agent:4041`
-- Mosquitto (MQTT broker) - `mosquitto:1883`
-- Cygnus - `cygnus:5051`
+- [Orion](https://fiware-orion.readthedocs.io/en/latest/) - `orion:1026`
+- [MongoDB](https://www.mongodb.com/) - `mongo-db:27017`
+- [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/) - `iot-agent:4041`
+- [Mosquitto](https://mosquitto.org/) (MQTT broker) - `mosquitto:1883`
+- [Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) - `cygnus:5051`
 
-Please refer to the [documentation](../gcn/docs) for further configuration information.
+Please refer to the [documentation](../docs) for further configuration information.

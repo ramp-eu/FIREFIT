@@ -14,7 +14,7 @@ The Image Classification Node (ICN) is a component that aims to easily integrate
 
 ## Background
 
-ICN provides the image classification and model selection functionalities, and is also able to perform the classification task automatically by subscribing to a [Image Reference Entity](../../gcn/data_models/image_reference.json) changes.
+ICN provides the image classification and model selection functionalities, and is also able to perform the classification task automatically by subscribing to [Image Reference Entity](../../gcn/data_models/image_reference.json) changes.
 
 Note that at the current state only [MongoDB](https://www.mongodb.com/) is considered, but the component was designed to scale to other types of database services in the future.
 
