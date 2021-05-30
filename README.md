@@ -1,7 +1,6 @@
 # FIREFIT ROSE-AP
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
-[![Docker badge](https://img.shields.io/docker/pulls/introsyspt/firefit.rose-ap.svg)](https://hub.docker.com/repository/docker/introsyspt/firefit.rose-ap)
 [![Documentation Status](https://readthedocs.org/projects/firefitrose-ap/badge/?version=latest)](https://firefitrose-ap.readthedocs.io/en/latest/?badge=latest)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4832/badge)](https://bestpractices.coreinfrastructure.org/projects/4832)
 
@@ -9,8 +8,8 @@ This repository holds the FIREFIT ROSE-AP components proposed by [Introsys](http
 
 This project is part of [DIH<sup>2</sup>](http://www.dih-squared.eu/). For more information check the RAMP Catalogue entry for the [components](https://github.com/ramp-eu).
 
-| :books: [Documentation](https://firefitrose-ap.readthedocs.io/en/latest/) |:whale: [Docker Hub](https://hub.docker.com/repository/docker/introsyspt/firefit.rose-ap) | :camera: [GCN](gcn) | :mag: [ICN](icn)
-| --- | --- | --- | --- |
+| :books: [Documentation](https://firefitrose-ap.readthedocs.io/en/latest/)  | :camera: [GCN](gcn) | :mag: [ICN](icn)
+| --- | --- | --- |
 
 ## Contents
 

@@ -1,6 +1,8 @@
 # GCN - Generic Camera Node
 
-The Generic Camera Node (GCN) is a component that aims to easily integrate any generic camera into a FIWARE solution, abstracting the user from entity, device, database and data persistency configurations.
+[![Docker badge](https://img.shields.io/docker/pulls/introsyspt/gcn.svg)](https://hub.docker.com/repository/docker/introsyspt/gcn)
+
+The Generic Camera Node (GCN) is a component that aims to easily integrate any generic camera into a [FIWARE](https://fiware-tutorials.readthedocs.io/en/latest/) solution, abstracting the user from entity, device, database and data persistency configurations.
 
 ## Contents
 
@@ -16,14 +18,14 @@ GCN provides the image capture and camera configuration functionalities, and als
 
 In short terms, the GCN performs the following tasks:
 
-- creates an [Image Reference Entity](gcn/data_models/image_reference.json) directly at Orion and the corresponding data persistence at MongoDB through Cygnus,
+- creates an [Image Reference Entity](data_models/image_reference.json) directly at Orion and the corresponding data persistence at MongoDB through Cygnus,
 - creates a representation of the camera as a device at Orion through the IoT Agent with configuration and actuation available,
 - creates a database instance at MongoDB to store the obtained images,
-- updates the [Image Reference Entity](gcn/data_models/image_reference.json) registered at Orion with a new image reference each time the camera captures and stores a new image.
+- updates the [Image Reference Entity](data_models/image_reference.json) registered at Orion with a new image reference each time the camera captures and stores a new image.
 
-This results in a device entity becoming available at Orion and to which the user can send configuration and capture commands. At each capture, the obtained image is automatically stored at the database and the [Image Reference Entity](gcn/data_models/image_reference.json) is updated with the corresponding information. At each configuration command, the processes defined by the user are performed and the device context is also updated at Orion.
+This results in a device entity becoming available at Orion and to which the user can send configuration and capture commands. At each capture, the obtained image is automatically stored at the database and the [Image Reference Entity](data_models/image_reference.json) is updated with the corresponding information. At each configuration command, the processes defined by the user are performed and the device context is also updated at Orion.
 
-Note that at the current state only MongoDB is considered, but the component was designed to scale to other types of database services in the future.
+Note that at the current state only [MongoDB](https://www.mongodb.com/) is considered, but the component was designed to scale to other types of database services in the future.
 
 To achieve this, the user is required to develop the necessary mechanisms using the [Python](https://www.python.org/) programming language. All the necessary structures are provided so that the user only has to *fill the gaps*. All the necessary steps to do so are described in the [documentation](docs).
 
