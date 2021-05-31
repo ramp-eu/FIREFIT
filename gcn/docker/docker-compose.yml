@@ -37,10 +37,8 @@ services:
         - default
     expose:
         - "4041"
-        - "7896"
     ports:
         - "4041:4041"
-        - "7896:7896"
     environment:
         - IOTA_CB_HOST=orion
         - IOTA_CB_PORT=1026
@@ -70,9 +68,9 @@ services:
     ports:
         - "1883:1883"
     volumes:
-        - type: bind
-          source: ./mosquitto/config
-          target: /mosquitto/config
+      - type: bind
+        source: ./mosquitto/config
+        target: /mosquitto/config
   
   # Data Persistence
   cygnus:
@@ -83,11 +81,6 @@ services:
         - mongo-db
     networks:
         - default
-    expose:
-        - "5080"
-    ports:
-        - "5051:5051"
-        - "5080:5080"
     environment:
         - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
         - "CYGNUS_MONGO_SERVICE_PORT=5051"
@@ -97,7 +90,7 @@ services:
 
   # GCN
   gcn:
-    image: gcn
+    image: introsyspt/gcn
     hostname: gcn
     container_name: gcn
     depends_on:
@@ -108,25 +101,11 @@ services:
     networks:
         - default
 
-  # ICN
-  icn:
-    image: icn
-    hostname: icn
-    container_name: icn
-    depends_on:
-        - orion
-        - iot-agent
-        - mosquitto
-        - mongo-db
-    networks:
-        - default
-    expose:
-        - "8181"
-    ports:
-        - "8181:8181"
-
 networks:
   default:
     ipam:
       config:
         - subnet: 172.18.1.0/24
+
+volumes:
+  mongo-db: ~

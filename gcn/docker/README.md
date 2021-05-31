@@ -1,3 +1,16 @@
+# GCN - Generic Camera Node
+
+The [GCN](../) is a component that aims to easily integrate any generic camera into a FIWARE solution, abstracting the user from entity, device, database and data persistency configurations. It provides the image capture and camera configuration functionalities, and also ensures the obtained images data persistency to a user-defined database service.
+
+## How to build the images
+
+The procedures to build an image for the [GCN](../) are presented in the [Installation and Administration Guide](../docs/installationguide.md).
+
+## How to use the images
+
+Once instantiated, the [GCN](../) must connect to an instance of the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). A sample [`docker-compose`](docker-compose.yml) file is provided.
+
+```yml
 version: "3.5"
 services:
   # Orion is the context broker
@@ -108,25 +121,26 @@ services:
     networks:
         - default
 
-  # ICN
-  icn:
-    image: icn
-    hostname: icn
-    container_name: icn
-    depends_on:
-        - orion
-        - iot-agent
-        - mosquitto
-        - mongo-db
-    networks:
-        - default
-    expose:
-        - "8181"
-    ports:
-        - "8181:8181"
-
 networks:
   default:
     ipam:
       config:
         - subnet: 172.18.1.0/24
+```
+
+The relevant elements to consider regarding the `docker-compose` are:
+
+- The usage of `MQTT` protocol and therefore the `mosquitto` broker
+- `hostname` of each service
+- `expose` specified ports, stating that those ports will be exposed within the **docker network**
+- `ports` specified ports, stating that those ports will be exposed to the **host machine**
+
+A description of the complete addresses (address:port) for each service, given the presented `docker-compose` is as follows:
+
+- [Orion](https://fiware-orion.readthedocs.io/en/latest/) - `orion:1026`
+- [MongoDB](https://www.mongodb.com/) - `mongo-db:27017`
+- [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/) - `iot-agent:4041`
+- [Mosquitto](https://mosquitto.org/) (MQTT broker) - `mosquitto:1883`
+- [Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) - `cygnus:5051`
+
+Please refer to the [documentation](../docs) for further configuration information.
