@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from colorlog import ColoredFormatter
+#from colorlog import ColoredFormatter
 
 logger = None
 
@@ -28,10 +28,10 @@ def build_boot_logger(logger_name):
 
 
 def build_console_handler():
-    formatter = ColoredFormatter('%(white)s%(name)s%(log_color)s - %(asctime)s - [%(levelname)s] - %(message)s')
+    #formatter = ColoredFormatter('%(white)s%(name)s%(log_color)s - %(asctime)s - [%(levelname)s] - %(message)s')
     handler_console = logging.StreamHandler(sys.stdout)
     handler_console.setLevel(logging.DEBUG)
-    handler_console.setFormatter(formatter)
+    #handler_console.setFormatter(formatter)
     return handler_console
 
 
@@ -47,10 +47,10 @@ def build_app_logger(logger_name):
 
 
 def build_file_handler(logger_name):
-    formatter = ColoredFormatter('%(white)s%(name)s%(log_color)s - %(asctime)s - [%(levelname)s] - %(message)s')
+    #formatter = ColoredFormatter('%(white)s%(name)s%(log_color)s - %(asctime)s - [%(levelname)s] - %(message)s')
     handler_file = logging.FileHandler(filename='./logs/{}.log'.format(logger_name), mode='a')
     handler_file.setLevel(logging.DEBUG)
-    handler_file.setFormatter(formatter)
+    #handler_file.setFormatter(formatter)
     return handler_file
 
 

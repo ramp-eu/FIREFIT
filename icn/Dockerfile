@@ -7,6 +7,6 @@ ADD . /app
 RUN pip install -r requirements.txt
 
 # user modules
-#RUN pip install tensorflow
+RUN pip install tensorflow
 
-CMD ./start.sh
+CMD ["bash", "./start.sh"]
