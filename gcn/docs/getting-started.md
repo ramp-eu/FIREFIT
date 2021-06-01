@@ -161,7 +161,13 @@ For this getting started example, a default [configuration](../configuration/con
 
 A detailed explanation of each parameter and how to configure the [GCN](../) and build a local docker image with the new configuration is given in the [Installation and Administration Guide](installationguide.md).
 
-By comparing with the `docker-compose`, it is possible to quickly correlate the defined parameters with the `hostname` and exposed/configured ports of each service. The id `urn:ngsi-ld:ImageRecord:001` will be assigned to the [Image Reference Entity](../data_models/image_reference.json) that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/). The id `urn:ngsi-ld:Camera:001` will be assigned to the camera device that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/) through [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html). Each image obtained from the camera will be stored at the `manufacturer` collection of the `production` database from a MongoDB instance (`mongo` defined as `sink`).
+By comparing with the `docker-compose`, it is possible to quickly correlate the defined parameters with the `hostname` and exposed/configured ports of each service.
+
+The id `urn:ngsi-ld:ImageRecord:001` will be assigned to the [Image Reference Entity](../data_models/image_reference.json) that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/).
+
+The id `urn:ngsi-ld:Camera:001` will be assigned to the camera device that will be created at [Orion](https://fiware-orion.readthedocs.io/en/master/) through [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html).
+
+Each image obtained from the camera will be stored at the `manufacturer` collection of the `production` database from a [MongoDB](https://www.mongodb.com/) instance (`mongo` defined as `sink`).
 
 As for the [`camera.py`](../gcn_lib/camera.py):
 
@@ -234,7 +240,7 @@ It is important to note that the contents of these functions depend on each user
 
 ## Initialize the stack
 
-To initialize the stack, use the provided [`docker-compose.yml`](../docker/docker-compose.yml) by issuing the commands:
+To initialize the stack, use the provided [`docker-compose`](../docker/docker-compose.yml) file by issuing the commands:
 
 ```console
 git clone https://github.com/Introsys/FIREFIT.ROSE-AP.git
@@ -243,7 +249,7 @@ cd FIREFIT.ROSE-AP/gcn/docker
 docker-compose -p gcn_stack up -d
 ```
 
-> **Note:** a mosquitto configuration file must be present enabling remote client access
+> **Note:** a mosquitto configuration file must be present enabling remote client access.
 
 This should create all the service instances. By checking the running containers:
 
@@ -483,7 +489,7 @@ Connection: close
 }
 ```
 
-One can infer that the `api_key`, `service` and `service-path` defined at the `configuration.json` are properly defined as a service, a mechanism used by [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html).
+One can infer that the `api_key`, `service` and `service-path` defined at the [`configuration.json`](../configuration/configuration.json) are properly defined as a service, a mechanism used by [JSON IoT Agent](https://fiware-iotagent-json.readthedocs.io/en/latest/stepbystep/index.html).
 
 ## Check data persistency
 
@@ -538,7 +544,7 @@ Date: Wed, 31 Mar 2021 13:18:05 GMT
 ]
 ```
 
-This confirms that [Orion](https://fiware-orion.readthedocs.io/en/master/) is notifying the Cygnus service regarding changes to the [Image Reference Entity](../data_models/image_reference.json).
+This confirms that [Orion](https://fiware-orion.readthedocs.io/en/master/) is notifying the [Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) service regarding changes to the [Image Reference Entity](../data_models/image_reference.json).
 
 > **Note:** FIWARE provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to confirm that data is being persisted. For that reason, the process will not be replicated in the present document.
 
@@ -644,13 +650,27 @@ cgn - 2021-03-31 16:06:38,430 - [INFO] - [MQTT]: Capture command issued.
 
 The topic to which `gcn` is subscribed to, as can be seen in the message received log, respects the format `/<api-key>/<device-id>` to comply with the [JSON IoT Agent functionality](https://fiware-iotagent-json.readthedocs.io/en/latest/index.html). From this point on, the logging system shows the feedback for the code previously defined at the `camera.py` file for the `capture` command, yielding the results for the two `print` statements. One very important note is the fact that the [NumPy](https://numpy.org/) was successfully encoded into a string, as it can be seen in the value assigned to the `image` key of the `json` to be sent to the database.
 
-To conclude the assessment of the success for the `capture` command, an access to the [MongoDB](https://www.mongodb.com/) instance needs to be performed in order to understand is the image was properly stored. As already mentioned, FIWARE provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to perform such task. Here, only the commands executed inside the MongoDB container will be presented, and the first one is to list the databases:
+To conclude the assessment of the success for the `capture` command, an [access to the MongoDB](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) instance needs to be performed in order to understand if the image was properly stored.
+
+To do so, first attach a shell session to the running instance of MongoDB container:
+
+```console
+docker exec -i -t db-mongo /bin/bash
+```
+
+You can then log into to the running mongo-db database:
+
+```console
+mongo --host mongo-db
+```
+
+Finally, list the available databases:
 
 ```console
 show dbs
 ```
 
-Yielding the result:
+The result should be as follows:
 
 ```console
 admin             0.000GB
@@ -755,7 +775,7 @@ Resulting in:
 { "_id" : ObjectId("60649ea578ad6db8940f993a"), "encoding" : "utf-8", "filename" : "my_image14", "md5" : "546d0d322d20bfbfb7d2e887b8287fb8", "chunkSize" : 261120, "length" : NumberLong(412), "uploadDate" : ISODate("2021-03-31T16:09:09.193Z") }
 ```
 
-Where a brand new image, `my_image14`, is presented.
+Where a  new image, `my_image14`, is presented.
 
 ## Issue a configuration command to the camera through Orion
 
