@@ -12,7 +12,6 @@ To achieve this, the user is required to develop the necessary mechanisms using 
 - [Installation and Administration Guide](installationguide.md)
 - [Getting Started](getting-started.md)
 - [User Manual](usermanual.md)
-- [API](api.md)
 
 ---
 

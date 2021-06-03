@@ -165,17 +165,17 @@ docker build -t gcn .
 
 If the pre-requisites are met, that is, all required services are execution, one can execute the image directly:
 
+- Using the docker hub image
+
 ```bash
 docker run introsyspt/gcn
 ```
 
-(if using the docker hub image)
+- Using the local image
 
 ```bash
 docker run gcn
 ```
-
-(if using the local image)
 
 Additionally, a [`docker-compose`](../docker/docker-compose.yml) file can be used to ramp-up the stack and start all the needed services at once.
 
