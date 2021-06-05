@@ -121,21 +121,21 @@ services:
         - default
 
   # ICN
-  icn:
-    image: introsyspt/icn
-    hostname: icn
-    container_name: icn
-    depends_on:
-        - orion
-        - iot-agent
-        - mosquitto
-        - mongo-db
-    networks:
-        - default
-    expose:
-        - "8181"
-    ports:
-        - "8181:8181"
+  #icn:
+  #  image: introsyspt/icn
+  #  hostname: icn
+  #  container_name: icn
+  #  depends_on:
+  #      - orion
+  #      - iot-agent
+  #      - mosquitto
+  #      - mongo-db
+  #  networks:
+  #      - default
+  #  expose:
+  #      - "8181"
+  #  ports:
+  #      - "8181:8181"
 
 networks:
   default:
@@ -429,8 +429,8 @@ One should obtain the following result:
 
 ```console
 CONTAINER ID   IMAGE                         COMMAND                  CREATED       STATUS       PORTS                              NAMES
-752deba8f1fa   icn                           "/bin/sh -c ./start.…"   3 hours ago   Up 3 hours   0.0.0.0:8181->8181/tcp             icn
-bdd02e335d84   gcn                           "python ./cgn.py"        3 hours ago   Up 3 hours                                      gcn
+bdd02e335d84   introsyspt/gcn:tensorflow     "python ./cgn.py"        3 hours ago   Up 3 hours                                      gcn_tensorflow
+752deba8f1fa   introsyspt/icn                "bash ./start.sh"        3 hours ago   Up 3 hours   0.0.0.0:8181->8181/tcp             icn
 f41a7eda8006   fiware/iotagent-json:latest   "docker/entrypoint.s…"   3 hours ago   Up 3 hours   0.0.0.0:4041->4041/tcp, 7896/tcp   fiware-iot-agent
 0363fda9a8d4   fiware/orion:2.4.0            "/usr/bin/contextBro…"   3 hours ago   Up 3 hours   0.0.0.0:1026->1026/tcp             fiware-orion
 e0153bed0459   fiware/cygnus-ngsi:latest     "/cygnus-entrypoint.…"   3 hours ago   Up 3 hours   5050/tcp, 5080/tcp                 fiware-cygnus
@@ -594,8 +594,8 @@ Just like in the [GCN usage example](../../gcn/docs/getting-started.md), a query
 ```http
 ### Devices defined at production service and manufacturer service-path
 GET http://localhost:4041/iot/devices
-fiware-service: production
-fiware-servicepath: /manufacturer
+fiware-service: models
+fiware-servicepath: /flowers
 ```
 
 The response should be as follows:
@@ -834,7 +834,9 @@ Due to the fact that [ICN](../) has two running services, the API and the applic
 
 The stack is now ready to be used but the most important element to perform the image classification is still lacking - the model.
 
-To create the model, [TensorFlow's image classification tutorial](https://www.tensorflow.org/tutorials/images/classification) was thoroughly followed in a separate Python environment outside of docker where the model training was performed yielding the following results:
+To overcome the process of creating and training a model, the pre-built image used and available at [docker hub](https://hub.docker.com/repository/docker/introsyspt/icn), already contains a trained model. For the sake of understanding the process, though, we explain it below.
+
+To create the model for this usage example, [TensorFlow's image classification tutorial](https://www.tensorflow.org/tutorials/images/classification) was thoroughly followed in a separate Python environment outside of docker where the model training was performed yielding the following results:
 
 ```console
 Model: "sequential_1"
@@ -923,8 +925,6 @@ The `ModelDB` instance is a custom class that makes use of [PyMongo](https://pym
 As previously mentioned, the [TensorFlow's model save function](https://www.tensorflow.org/tutorials/keras/save_and_load#save_the_entire_model) defaults to the `SavedModel` format which generates a directory containing several files. For that reason, the same directory is compressed into a `zip` archive to be stored at the model database service (MongoDB) running in a container.
 
 FIWARE provides a detailed [step-by-step guide](https://fiware-tutorials.readthedocs.io/en/latest/historic-context-flume/index.html#mongodb-reading-data-from-a-database) on how to confirm that data is being persisted. For that reason, the process will not be replicated in the present document.
-
-To overcome the process of creating a trained model, for this quick start guide, a pre-built image already containing the mentioned model is available at [docker hub](https://hub.docker.com/repository/docker/introsyspt/icn).
 
 ## List available models
 
@@ -1091,7 +1091,7 @@ Date: Thu, 01 Apr 2021 17:12:33 GMT
 By accessing `icn` logs:
 
 ```console
-docker logs gcn
+docker logs icn
 ```
 
 Similar results to the following should have been appended to the existing logs:
@@ -1248,7 +1248,7 @@ Date: Thu, 01 Apr 2021 17:50:34 GMT
 By printing the `gcn` logs:
 
 ```console
-docker logs gcn
+docker logs gcn_tensorflow
 ```
 
 It should yield a result similar to the following (note the encoded image abbreviation):
