@@ -1,3 +1,7 @@
+import getopt
+import io
+import sys
+
 from icn_lib import logger
 from icn_lib import Configuration
 from icn_lib import Orion
@@ -8,7 +12,7 @@ from icn_lib import ClassifierEngine
 from icn_lib import ProtoClient
 
 
-if __name__ == '__main__':
+def main(argv):
     logger.info('Application starting.')
 
     config = Configuration()
@@ -36,6 +40,19 @@ if __name__ == '__main__':
     model_db.configure_database_fs()
 
     logger.info('Successful.')
+    logger.info('Add model.')
+
+    opts, args = getopt.getopt(argv,"hf:",["ifile="])
+    for opt, arg in opts:
+        
+        if opt in ("-f"):
+            model = arg
+
+        with io.FileIO(model, 'r') as f:
+            model_db.put_model(model, f)
+            logger.debug('Model saved to MongoDB')
+
+    logger.info('Successful.')
     logger.info('Configuring image classifier.')
 
     classifier = Classifier()
@@ -47,6 +64,7 @@ if __name__ == '__main__':
     proto_client = ProtoClient(config, classifier_engine)
     proto_client.start()
 
-    pass
+if __name__ == "__main__":
+    main(sys.argv[1:])
 else:
     pass

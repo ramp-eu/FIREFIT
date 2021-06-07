@@ -4,10 +4,10 @@
 set -m
 
 # start the primary process and put it in the background
-python ./icn.py &
-
-# save model to DB
-python icn_lib/add_model.py flowers_model.zip
+#
+#### Switch flowers_model.zip with your own model ###
+#
+python ./icn.py -f flowers_model.zip &
 
 # strart the api process
 gunicorn --config python:icn_api.server_config api:app

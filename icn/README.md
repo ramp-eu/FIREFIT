@@ -2,23 +2,27 @@
 
 [![Docker badge](https://img.shields.io/docker/pulls/introsyspt/icn.svg)](https://hub.docker.com/repository/docker/introsyspt/icn)
 
-The Image Classification Node (ICN) is a component that aims to easily integrate Machine Learning or Deep Learning models to perform image classification tasks into a [FIWARE](https://fiware-tutorials.readthedocs.io/en/latest/) solution, abstracting the user fom entity, device, database and data persistency configurations.
+The Image Classification Node (ICN) provides a mechanism to easily integrate Machine Learning or Deep Learning models into a [FIWARE](https://fiware-tutorials.readthedocs.io/en/latest/) solution, with the objective of performing image classification tasks and abstracting the user fom entity, device, database and data persistency configurations.
 
 ## Contents
 
 - [Background](#background)
+- [Getting Started](#getting-started)
 - [Install](#install)
 - [Usage](#usage)
-- [API](#api)
 - [License](#license)
 
 ## Background
 
-ICN provides the image classification and model selection functionalities, and is also able to perform the classification task automatically by subscribing to [Image Reference Entity](../../gcn/data_models/image_reference.json) changes.
+ICN provides the image classification and model selection functionalities, and is also able to perform the classification task automatically by subscribing to [Image Reference Entity](../../gcn/data_models/image_reference.json) changes. Although it can be used as an independent component, its full functionality can be achieved when working together with the [Generic Camera Node (GCN)](../../gcn). For this reason, it is advised to consult the [GCN documentation](../../gcn/docs/index.md) before using the ICN.
 
-Note that at the current state only [MongoDB](https://www.mongodb.com/) is considered, but the component was designed to scale to other types of database services in the future.
+The ICN can be adapted for custom applications. To achieve this, the user is required to develop the necessary mechanisms using the [Python](https://www.python.org/) programming language. All the necessary structures are provided so that the user only has to *fill the gaps*. All the necessary steps to do so are described in the [documentation](docs/index.md).
 
-To achieve such functionality, the user is required to develop the necessary mechanisms using the [Python](https://www.python.org/) programming language. All the necessary structures are provided so that the user only has to *fill the gaps*. All the necessary steps to do so are described in the [documentation](docs).
+Note that, currently, only [MongoDB](https://www.mongodb.com/) is supported for data persistance.
+
+## Getting started
+
+The [step-by-step tutorial](docs/getting-started.md) provides an overall understanding of the component by experimenting simple usage example.
 
 ## Install
 
