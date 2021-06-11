@@ -71,7 +71,7 @@ To better understand how these components cooperate, an implementation example i
 
 <div>
   <p align="center">
-    <img src="system.png">
+    <img src="docs/system.png">
   </p>
   <p align="center">Vision-based Inspection System</p>
 </div>
