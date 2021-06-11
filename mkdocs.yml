@@ -1,7 +1,7 @@
-site_name: <site-name>
-site_url: https://<site-url>
-repo_url: https://github.com/<repo_url>
-site_description: RAMP Documentation
+site_name: FIREFIT ROSE-AP
+site_url: http://dih-squared.eu/TTE-FIREFIT
+repo_url: https://github.com/Introsys/FIREFIT.ROSE-AP
+site_description: FIREFIT ROSE-AP Documentation
 docs_dir: docs
 site_dir: html
 edit_uri: edit/master/doc/
@@ -10,10 +10,11 @@ use_directory_urls: false
 theme: readthedocs
 pages:
   - Home: 'index.md'
-  - 'Getting Started' : 'getting-started.md'
-  - 'User & Programmers Manual':
-    - 'Architecture' : 'architecture.md'
-    - 'API' : 'api.md'
-    - 'User Guide': 'usermanual.md'
-  - 'Installation & Administration Manual': 
-    - 'Installation Guide': 'installationguide.md'
+  - 'GCN - Generic Camera Node':
+    - Introduction : 'gcn/index.md'
+#    - 'Getting Started' : 'gcn/docs/getting-started.md'
+#    - 'User & Programmers Manual':
+#      - 'Architecture' : 'gcn/docs/architecture.md'
+#      - 'User Guide': 'gcn/docs/usermanual.md'
+#    - 'Installation & Administration Manual': 
+#      - 'Installation Guide': 'gcn/docs/installationguide.md'
