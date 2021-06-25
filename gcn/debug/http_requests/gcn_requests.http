@@ -1,0 +1,71 @@
+### Get Orion Entities
+GET http://localhost:1026/v2/entities
+
+### Device entities at production service and manufacturer service-path
+GET http://localhost:1026/v2/entities
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+### Devices defined at production service and manufacturer service-path
+GET http://localhost:4041/iot/devices
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+### Check IoT Agent Services for the production service and any (*) service-path
+GET http://localhost:4041/iot/services
+fiware-service: production
+fiware-servicepath: /*
+
+### Orion subscriptions
+GET http://localhost:1026/v2/subscriptions
+
+### Issue a capture command to the camera through Orion
+PATCH http://localhost:1026/v2/entities/urn:ngsi-ld:Camera:001/attrs
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+{
+    "capture": {
+        "type": "command",
+        "value": ""
+    }
+}
+
+### Issue a capture command to the camera through Orion
+PATCH http://localhost:1026/v2/entities/urn:ngsi-ld:Camera:001/attrs
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+{
+    "capture": {
+        "type": "command",
+        "value": ""
+    }
+}
+
+### Issue a configuration command to the camera through Orion
+POST http://localhost:1026/v2/op/update
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+{
+    "actionType": "update",
+    "entities": [
+        {
+            "id": "urn:ngsi-ld:Camera:001",
+            "type": "camera",
+            "configure": {
+                "type": "command",
+                "value": {
+                    "brightness": 0.9,
+                    "flash": "off",
+                    "focus": "auto",
+                    "filter": "none"
+                }
+            }
+        }
+    ]
+}

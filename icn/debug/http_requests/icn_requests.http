@@ -1,103 +1,25 @@
+### Get Orion Entities
+GET http://localhost:1026/v2/entities
 
-### Check Services
+### Device entities at models service and flowers service-path
+GET http://localhost:1026/v2/entities
+fiware-service: models
+fiware-servicepath: /flowers
+
+### Devices defined at production service and manufacturer service-path
+GET http://localhost:4041/iot/devices
+fiware-service: models
+fiware-servicepath: /flowers
+
+### Check IoT Agent Services for the models service and any (*) service-path
 GET http://localhost:4041/iot/services
 fiware-service: models
 fiware-servicepath: /*
 
-### Check devices (DO NOT USE /*)
-GET http://localhost:4041/iot/devices
-fiware-service: models
-fiware-servicepath: /animals
-
-### Check devices (DO NOT USE /*)
-GET http://localhost:4041/iot/devices
-fiware-service: models
-fiware-servicepath: /flowers
-
-### Subscriptions
+### Orion subscriptions
 GET http://localhost:1026/v2/subscriptions
 
-### camera (DO NOT USE /*)
-GET http://localhost:1026/v2/entities
-fiware-service: models
-fiware-servicepath: /animals
-
-### Device entities at production service and manufacturer service-path
-GET http://localhost:1026/v2/entities
-fiware-service: models
-fiware-servicepath: /flowers
-
-### Entities
-GET http://localhost:1026/v2/entities
-
-### Classifier entity
-GET http://localhost:1026/v2/entities/urn:ngsi-ld:ImageClassifier:001
-fiware-service: models
-fiware-servicepath: /flowers
-
-
-
-
-
-
-
-### API
-POST http://localhost:8181/classifier/urn:ngsi-ld:ImageClassifier:001
-Content-Type: application/json
-
-{
-    "badjojoz": "badjoraz"
-}
-
-### API
-POST http://localhost:8181/classifier/urn:ngsi-ld:ImageClassifier:001
-Content-Type: application/json
-
-{
-    "subscriptionId": "6059c532babb24c8a752f06c",
-    "data": [
-        {
-            "id": "urn:ngsi-ld:ImageRecord:001",
-            "type": "imageReference",
-            "image": {
-                "type": "reference",
-                "value": {
-                    "databaseType": "mongo",
-                    "databaseEndpoint": "http://localhost:27017",
-                    "database": "production",
-                    "collection": "/ids",
-                    "imageFile": "asljdhasldk"
-                },
-                "metadata": {}
-            }
-        }
-    ]
-}
-
-### IOTAGENT BEHAVIOUR
-PUT http://localhost:1026/v2/entities/urn:ngsi-ld:Camera:001/attrs
-fiware-service: production
-fiware-servicepath: /ids
-Content-Type: application/json
-
-{
-    "TimeInstant": {
-        "value": "2022-03-19T09:15:56.00Z"
-    },
-    "capture_status": {
-        "value": "TESTING",
-        "metadata": {
-            "TimeInstant": {
-                "value": "2022-03-19T09:15:56.00Z"
-            }
-        }
-    }
-}
-
-
-
-
-### TEST IOT AGENT MQTT MESSAGES
+### Issue a listModels command to the classifier device through Orion
 PATCH http://localhost:1026/v2/entities/urn:ngsi-ld:ImageClassifier:001/attrs
 Content-Type: application/json
 fiware-service: models
@@ -110,7 +32,12 @@ fiware-servicepath: /flowers
     }
 }
 
-### TEST IOT AGENT MQTT MESSAGES (HTTP COMMAND)
+### Classifier entity
+GET http://localhost:1026/v2/entities/urn:ngsi-ld:ImageClassifier:001
+fiware-service: models
+fiware-servicepath: /flowers
+
+### Issue a model selection command to the classifier through Orion
 POST http://localhost:1026/v2/op/update
 Content-Type: application/json
 fiware-service: models
@@ -128,4 +55,17 @@ fiware-servicepath: /flowers
             }
         }
     ]
+}
+
+### Issue a capture command to the camera device through Orion
+PATCH http://localhost:1026/v2/entities/urn:ngsi-ld:Camera:001/attrs
+Content-Type: application/json
+fiware-service: production
+fiware-servicepath: /manufacturer
+
+{
+    "capture": {
+        "type": "command",
+        "value": ""
+    }
 }
