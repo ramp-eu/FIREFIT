@@ -8,8 +8,8 @@ This repository holds the FIREFIT ROSE-AP components proposed by [Introsys](http
 
 This project is part of [DIH<sup>2</sup>](http://www.dih-squared.eu/). For more information check the RAMP Catalogue entry for the [components](https://github.com/ramp-eu).
 
-| :books: [Documentation](https://firefitrose-ap.readthedocs.io/en/latest/)  | :camera: [GCN](gcn) | :mag: [ICN](icn)
-| --- | --- | --- |
+| :books: [Documentation](https://firefitrose-ap.readthedocs.io/en/latest/)  | :vhs: [Video](https://youtu.be/lITXRxg2mTo) | :camera: [GCN](gcn) | :mag: [ICN](icn)
+| --- | --- | --- | --- |
 
 ## Contents
 
